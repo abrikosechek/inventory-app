@@ -58,11 +58,6 @@
         </div>
       </div>
     </div>
-    <!-- TEST -->
-    <p>{{ dragging }}</p>
-    <p>
-      {{ inventory }}
-    </p>
   </div>
 
   <Draggable
@@ -105,7 +100,6 @@ function handleMouseMove(e) {
   dragging.value = true;
   draggableItemPosition.value.y = e.clientY - 70;
   draggableItemPosition.value.x = e.clientX - 70;
-  console.log(e);
 }
 
 async function handleMouseUp(e) {
