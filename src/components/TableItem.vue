@@ -1,5 +1,5 @@
 <template>
-  <div class="table-item" :style="`grid-area: i${index}`" :class="{ active }">
+  <div class="table-item" :class="{ active }">
     <Sqaures class="table-item__squares" :color="color" />
     <div class="table-item__amount">
       <p>

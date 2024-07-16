@@ -33,7 +33,11 @@ export const useInventoryStore = defineStore("inventory", {
     },
     changeItemPlace(itemPlace, newPlace) {
       let inventoryArray = [...this.inventoryState];
-      inventoryArray.find((item) => item.place === itemPlace).place = newPlace;
+
+      if (inventoryArray.some((item) => item.place == newPlace)) {
+        inventoryArray.find((item) => item.place == newPlace).place = itemPlace;
+      }
+      inventoryArray.find((item) => item.place == itemPlace).place = newPlace;
 
       LockrSet("inventory", inventoryArray);
       this.getInventory();

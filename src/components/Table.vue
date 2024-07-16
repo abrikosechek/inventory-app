@@ -5,18 +5,21 @@
         v-for="item in 25"
         :key="`emptycell_${item}`"
         :style="`--i: i${item}`"
+        id="TableItemCell"
         class="table__cells--item"
-      />
-      <TableItem
-        v-for="item in inventory"
-        :key="item.place"
-        :index="item.place"
-        :color="item.color"
-        :amount="item.amount"
-        :active="itemInfo && itemInfo.place == item.place"
-        @mouseup="openItem(item)"
-        @mousedown="(e) => handleMouseDown(item, e)"
-      />
+      >
+        <TableItem
+          v-if="getInventoryItemByIndex(item)"
+          :index="getInventoryItemByIndex(item).place"
+          :color="getInventoryItemByIndex(item).color"
+          :amount="getInventoryItemByIndex(item).amount"
+          :active="
+            itemInfo && itemInfo.place == getInventoryItemByIndex(item).place
+          "
+          @mouseup="(e) => openItem(e, getInventoryItemByIndex(item))"
+          @mousedown="(e) => handleMouseDown(getInventoryItemByIndex(item), e)"
+        />
+      </div>
 
       <div v-if="itemInfo" class="table__aside" @click.self="itemInfo = null">
         <div class="table-aside">
@@ -84,7 +87,7 @@ const deleting = ref(false);
 
 const inventory = computed(() => inventoryStore.inventory);
 
-function openItem(item) {
+function openItem(event, item) {
   if (!dragging.value) itemInfo.value = item;
 }
 
@@ -109,15 +112,15 @@ async function handleMouseUp(e) {
 
   await nextTick();
   const elementUnderCursor = document.elementFromPoint(e.clientX, e.clientY);
-  if (elementUnderCursor.classList[0] == "table__cells--item") {
-    const newItemPlace = elementUnderCursor.style.cssText
+  let cellUnderCursor = elementUnderCursor.closest("#TableItemCell");
+  if (cellUnderCursor) {
+    const newItemPlace = cellUnderCursor.style.cssText
       .split("--i: i")
       .join("")
       .split(";")
       .join("");
     inventoryStore.changeItemPlace(draggableItemPlace, newItemPlace);
   }
-
   window.removeEventListener("mousemove", handleMouseMove);
   window.removeEventListener("mouseup", handleMouseUp);
 }
@@ -127,6 +130,10 @@ function handleMouseDown(item) {
 
   window.addEventListener("mousemove", handleMouseMove);
   window.addEventListener("mouseup", handleMouseUp);
+}
+
+function getInventoryItemByIndex(index) {
+  return inventory.value.find((i) => i.place == index);
 }
 </script>
 
